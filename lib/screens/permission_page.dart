@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:think_lite/screens/home_page.dart';
 import 'package:think_lite/utils/permission_controller.dart';
 
@@ -17,7 +18,7 @@ class PermissionsPage extends StatefulWidget{
 class _PermissionsPageState extends State<PermissionsPage>{
 
   bool usagePermissionGranted = false;
-  bool showNotificationPermissionGranted = false;
+  bool drawOverOtherAppsPermissionGranted = false;
   late Timer timer;
   final permissionController = PermissionController();
 
@@ -25,8 +26,11 @@ class _PermissionsPageState extends State<PermissionsPage>{
   void initState() {
     super.initState();
     timer = Timer.periodic(const Duration(seconds: 1), (timer) async{
-      usagePermissionGranted = await permissionController.checkUsageStatePermission();
-      showNotificationPermissionGranted = await permissionController.checkNotificationPermission();
+      if(!(await permissionController.checkNotificationPermission())){
+        await permissionController.askNotificationPermission();
+      }
+      usagePermissionGranted = (await permissionController.checkUsageStatePermission());
+      drawOverOtherAppsPermissionGranted = await permissionController.checkOverlayPermission();
       setState(() {});
     });
   }
@@ -57,11 +61,11 @@ class _PermissionsPageState extends State<PermissionsPage>{
               children: [
                 _usagePermissionWidget(),
                 SizedBox(width: screenWidth*0.07,),
-                _showNotificationPermissionWidget(),
+                _overlayWidgetPermissionWidget(),
               ],
             ),
             const Spacer(),
-            showNotificationPermissionGranted && usagePermissionGranted ? _continueToAppButton() : const SizedBox.shrink(),
+            drawOverOtherAppsPermissionGranted && usagePermissionGranted ? _continueToAppButton() : const SizedBox.shrink(),
             SizedBox(height: screenHeight*0.02,)
           ],
         )
@@ -133,7 +137,7 @@ class _PermissionsPageState extends State<PermissionsPage>{
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Notification Permission.", style: TextStyle(fontSize: screenWidth*0.04,fontWeight: FontWeight.bold, decoration: TextDecoration.underline),),
+                      Text("Display Over Apps", style: TextStyle(fontSize: screenWidth*0.04,fontWeight: FontWeight.bold, decoration: TextDecoration.underline),),
                       Text("To popup a timer display", style: TextStyle(fontSize: screenWidth*0.03, fontStyle: FontStyle.italic),)
                     ],
                   )
@@ -147,6 +151,7 @@ class _PermissionsPageState extends State<PermissionsPage>{
   }
 
   Widget _continueToAppButton(){
+    final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return MaterialButton(
@@ -154,7 +159,7 @@ class _PermissionsPageState extends State<PermissionsPage>{
         borderRadius: BorderRadius.circular(20),
       ),
       padding: const EdgeInsets.all(10),
-      onPressed: (showNotificationPermissionGranted && usagePermissionGranted)
+      onPressed: (drawOverOtherAppsPermissionGranted && usagePermissionGranted)
           ? () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => const HomePage()))
           : null,
       color: Colors.white,
@@ -217,7 +222,7 @@ class _PermissionsPageState extends State<PermissionsPage>{
     );
   }
 
-  Widget _showNotificationPermissionWidget(){
+  Widget _overlayWidgetPermissionWidget(){
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
 
@@ -238,10 +243,10 @@ class _PermissionsPageState extends State<PermissionsPage>{
                 Icon(Icons.timer, size: screenWidth*0.1, color: Colors.blue,),
                 Text(" : ", style: TextStyle(fontSize: screenWidth*0.045),),
                 Icon(
-                  showNotificationPermissionGranted
+                  drawOverOtherAppsPermissionGranted
                       ? Icons.check_circle_sharp
                       : Icons.close_rounded,
-                  color: showNotificationPermissionGranted
+                  color: drawOverOtherAppsPermissionGranted
                       ? Colors.green
                       : Colors.red,
                   size: screenWidth*0.1,
@@ -257,10 +262,10 @@ class _PermissionsPageState extends State<PermissionsPage>{
               ),
               color: Colors.white,
               disabledColor: Colors.grey,
-              onPressed: showNotificationPermissionGranted
+              onPressed: drawOverOtherAppsPermissionGranted
                   ? null
                   : () async{
-                await permissionController.askNotificationPermission();
+                await _askForDisplayOverWidgetsPermission();
                 setState(() {});
               },
               child: Text("Grant", style: TextStyle(fontSize: screenWidth*0.03, color: Colors.black),),
@@ -269,6 +274,13 @@ class _PermissionsPageState extends State<PermissionsPage>{
         ),
       ),
     );
+  }
+
+  _askForDisplayOverWidgetsPermission() async{
+    bool? overlayPermissionsGranted = await permissionController.askOverlayPermission();
+    if(overlayPermissionsGranted != null && !overlayPermissionsGranted){
+      debugPrint("Overlay Permissions not granted!");
+    }
   }
 
 

@@ -11,10 +11,8 @@ void main() async {
   await _initialize();
 
   bool permissionsAvailable = await PermissionController().checkPermissions();
-
   runApp(MyApp(
     home: !permissionsAvailable?  const MyApp(home: PermissionsPage()): const MyApp(home: HomePage()),
-
   ));
 }
 
@@ -43,5 +41,11 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+// This is the isolate entry for the Alert Window Service
+// It needs to be added in the main.dart file with the name "overlayMain"...(jugaadu code max by plugin dev)
+
+
 
 
