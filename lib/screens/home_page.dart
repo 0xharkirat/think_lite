@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(onPressed: (){
-          AlertDialogService.createAlertDialog();
+
         }, child: const Text('Show overlay')),
       ),
     );

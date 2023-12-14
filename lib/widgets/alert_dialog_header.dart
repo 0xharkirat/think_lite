@@ -12,12 +12,11 @@ class AlertDialogHeader extends StatelessWidget {
     return Material(
       type: MaterialType.transparency,
       child: SizedBox(
-        height: screenHeight * 0.4,
         child: Column(
           children: [
             Padding(
                 padding: EdgeInsets.all(screenWidth * 0.01),
-                child: const Icon(Icons.smart_display_rounded),
+                child: Icon(Icons.smart_display_rounded, size: screenHeight * 0.33, color: Theme.of(context).colorScheme.onPrimaryContainer,),
             ),
             const Spacer(),
             _title(),
@@ -33,6 +32,9 @@ class AlertDialogHeader extends StatelessWidget {
   Widget _title() {
     return const Text(
       "App Opened!!!!",
+      style: TextStyle(
+        fontSize: 14
+      ),
     );
   }
 
@@ -46,7 +48,6 @@ class AlertDialogHeader extends StatelessWidget {
       },
       icon: Icon(
         Icons.close,
-        size: screenHeight * 0.04,
       ),
     );
   }

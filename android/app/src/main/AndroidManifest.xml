@@ -22,7 +22,8 @@
             />
 
         <service android:name="flutter.overlay.window.flutter_overlay_window.OverlayService"
-            android:exported="false" />
+            android:foregroundServiceType="specialUse"
+           />
 
         <activity
             android:name=".MainActivity"

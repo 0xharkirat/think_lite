@@ -9,7 +9,7 @@ import 'package:think_lite/utils/permission_controller.dart';
 
 void main() async {
 
-  // await _initialize();
+  await _initialize();
 
   bool permissionsAvailable = await PermissionController().checkPermissions();
   runApp(MyApp(
@@ -32,9 +32,13 @@ void overlayMain() async {
   debugPrint("Starting Alerting Window Isolate!");
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const MaterialApp(
+  runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: OverlayWidget()
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: false,
+      ),
+      home: const OverlayWidget()
   ));
 }
 
