@@ -4,6 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:think_lite/service/alert_dialog_service.dart';
+import 'package:think_lite/utils/app_stats.dart';
+import 'package:think_lite/utils/permission_controller.dart';
+import 'package:usage_stats/usage_stats.dart';
 
 
 const String STOP_MONITORING_SERVICE_KEY = "stop";
@@ -74,18 +78,23 @@ Future<void> startMonitoringService() async {
 onMonitoringServiceStart(ServiceInstance service) async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  Map<String, UsageInfo> previousUsageSession = await getCurrentUsageStats();
+
   // Stop this background service
   _registerListener(service);
 
-  _startTimer();
+  _startTimer(previousUsageSession);
 }
 
-Future<void> _startTimer() async{
+Future<void> _startTimer(Map<String, UsageInfo> previousUsageSession) async{
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
+  final controller = PermissionController();
+
   Timer.periodic(const Duration(seconds: 1), (timer) async{
+    timer.cancel();
     flutterLocalNotificationsPlugin.show(
       888,
       'Think Lite',
@@ -100,8 +109,25 @@ Future<void> _startTimer() async{
       ),
     );
 
+    Map<String, UsageInfo> currentUsageSession = await getCurrentUsageStats();
+    String? appOpened = checkIfAnyAppHasBeenOpened(currentUsageSession, previousUsageSession);
+    if(appOpened != null){
+      if (appOpened == 'com.google.android.youtube'){
+        print('youtube opened');
+        AlertDialogService.createAlertDialog();
+      }
+      else {
+        print('some other $appOpened');
+      }
+    }
+    previousUsageSession = currentUsageSession;
+
     print(DateTime.now());
 
+
+
+
+    _startTimer(previousUsageSession);
   });
 }
 

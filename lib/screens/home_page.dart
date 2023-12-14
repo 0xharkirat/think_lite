@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:think_lite/service/alert_dialog_service.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -10,8 +11,10 @@ class HomePage extends StatelessWidget {
         title: const Text('Think'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: const Center(
-        child: Text('Hello World'),
+      body: Center(
+        child: ElevatedButton(onPressed: (){
+          AlertDialogService.createAlertDialog();
+        }, child: const Text('Show overlay')),
       ),
     );
   }
