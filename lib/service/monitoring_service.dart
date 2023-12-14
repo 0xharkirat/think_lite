@@ -74,8 +74,6 @@ Future<void> startMonitoringService() async {
 onMonitoringServiceStart(ServiceInstance service) async {
   WidgetsFlutterBinding.ensureInitialized();
 
-
-
   // Stop this background service
   _registerListener(service);
 
@@ -102,6 +100,7 @@ Future<void> _startTimer() async{
       ),
     );
 
+    print(DateTime.now());
 
   });
 }
