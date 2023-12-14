@@ -1,6 +1,12 @@
 <component name="libraryTable">
   <library name="Flutter Plugins" type="FlutterPluginsLibraryType">
-    <CLASSES />
+    <CLASSES>
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_background_service-5.0.5" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_background_service_ios-5.0.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/usage_stats-1.2.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_background_service_android-6.2.2" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/installed_apps-1.4.0" />
+    </CLASSES>
     <JAVADOC />
     <SOURCES />
   </library>
