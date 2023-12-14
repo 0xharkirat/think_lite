@@ -1,8 +1,20 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:think_lite/screens/home_page.dart';
+import 'package:think_lite/service/monitoring_service.dart';
 
-void main() {
+void main() async {
+
+  await _initialize();
   runApp(const MyApp());
+}
+
+_initialize() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  DartPluginRegistrant.ensureInitialized();
+
+  await startMonitoringService();
 }
 
 class MyApp extends StatelessWidget {
@@ -21,3 +33,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
